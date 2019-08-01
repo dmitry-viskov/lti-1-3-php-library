@@ -13,11 +13,18 @@ class Example_Database implements LTI\Database {
         if (empty($_SESSION['iss']) || empty($_SESSION['iss'][$iss])) {
             return false;
         }
+
+        if (strpos($_SESSION['iss'][$iss]['key_set_url'], 'http') === 0) {
+            $key_set_url = $_SESSION['iss'][$iss]['key_set_url'];
+        } else {
+            $key_set_url = __DIR__ . $_SESSION['iss'][$iss]['key_set_url'];
+        }
+
         return LTI\LTI_Registration::new()
             ->set_auth_login_url($_SESSION['iss'][$iss]['auth_login_url'])
             ->set_auth_token_url($_SESSION['iss'][$iss]['auth_token_url'])
             ->set_client_id($_SESSION['iss'][$iss]['client_id'])
-            ->set_key_set_url($_SESSION['iss'][$iss]['key_set_url'])
+            ->set_key_set_url($key_set_url)
             ->set_issuer($iss)
             ->set_tool_private_key($this->private_key($iss));
     }
